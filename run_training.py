@@ -1,64 +1,3 @@
-asch004
-Bfbztsxrhm4&
-
-6/328 Ellerslie -ÇMA/Listing
-6/328 Ellerslie - ÇMA/Listing 
-
-Ellerslie 6/7
-Taka 
-35a Onehunga Mall, Onehunga
-
-
-3/10 Gordon - Awaiting AML Approval
-Done with CMA/Listing 
-5a John
-Done with CMA/Listing 
-35a Onehunga Mall, Onehunga
-Done with CMA/Listing 
-Ellerslie 6/7
-Done with CMA/Listing 
-
-
-Doing Now:
-35 Wickman - Waiting for RICK
-5a John- Awaiting AML Approval
-
-
-
-DO Listing for
-
-35 Wickman
-5a John
-Ellerslie 6/7 
-
-5/13 rose bank
-
-
-
-
-AMl 35 wickway
-listing/CMA
-
-
-
-
-AML STATM- done 
-
-Ellerslie 6/7 
-rosebank
-
-30 Gibson
-
-
-
-NA2068/9
-
-
-
-Aman
-Abdul
-suiya
-"""
 Kaggle-ready training entry point. Pulls together checkers_engine,
 baseline_agents, td_leaf, and td_train (all independently tested) plus
 checkpoint_manager (tested except for the real git push, see its own
@@ -214,6 +153,3 @@ if __name__ == "__main__":
         print(f"Features: {FEATURE_NAMES}\n")
         rng = _random.Random()  # unseeded -- this is a real run, not a repeatable test
         run(total_episodes=total_episodes, rng=rng)
-
-
-
