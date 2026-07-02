@@ -1,3 +1,63 @@
+asch004
+Bfbztsxrhm4&
+
+6/328 Ellerslie -ÇMA/Listing
+6/328 Ellerslie - ÇMA/Listing 
+
+Ellerslie 6/7
+Taka 
+35a Onehunga Mall, Onehunga
+
+
+3/10 Gordon - Awaiting AML Approval
+Done with CMA/Listing 
+5a John
+Done with CMA/Listing 
+35a Onehunga Mall, Onehunga
+Done with CMA/Listing 
+Ellerslie 6/7
+Done with CMA/Listing 
+
+
+Doing Now:
+35 Wickman - Waiting for RICK
+5a John- Awaiting AML Approval
+
+
+
+DO Listing for
+
+35 Wickman
+5a John
+Ellerslie 6/7 
+
+5/13 rose bank
+
+
+
+
+AMl 35 wickway
+listing/CMA
+
+
+
+
+AML STATM- done 
+
+Ellerslie 6/7 
+rosebank
+
+30 Gibson
+
+
+
+NA2068/9
+
+
+
+Aman
+Abdul
+suiya
 """
 Kaggle-ready training entry point. Pulls together checkers_engine,
 baseline_agents, td_leaf, and td_train (all independently tested) plus
@@ -101,17 +161,25 @@ def run(total_episodes, rng):
     return weights, episode_count
 
 
-if __name__ == "__main__":
+def smoke_test():
+    """Validates train -> save -> commit -> resume against a throwaway
+    local repo. Does NOT exercise push_checkpoint() -- a throwaway repo
+    has no real remote to push to. This is NOT run by default; call it
+    explicitly with `python run_training.py --smoke-test`.
+
+    (This was, for one bad commit, silently the DEFAULT behavior of this
+    file -- meaning `python run_training.py` ran this instead of real
+    training, against a repo that gets deleted when the function
+    returns. Real training was never attempted, nothing was pushed, and
+    the confident-looking "OK" messages made that easy to miss. Fixed
+    now: real training is the default, this needs the explicit flag.)
+    """
     import random as _random
-    print(f"Config: depth={SEARCH_DEPTH} alpha={ALPHA} "
-          f"episodes_per_batch={EPISODES_PER_BATCH} repo_dir={REPO_DIR}")
-    print(f"Features: {FEATURE_NAMES}\n")
+    import tempfile
+    import subprocess
+    global REPO_DIR
+
     rng = _random.Random(0)
-    # A short run as a smoke test that the whole wiring holds together --
-    # not a real training session. REPO_DIR defaults to "." so this
-    # writes/commits into whatever directory the script runs from; point
-    # CHECKPOINT_REPO_DIR at a real cloned repo for actual use.
-    import tempfile, subprocess
     with tempfile.TemporaryDirectory() as tmp:
         subprocess.run(["git", "init", "-q"], cwd=tmp, check=True)
         subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=tmp, check=True)
@@ -123,14 +191,29 @@ if __name__ == "__main__":
         assert episodes >= 100
         assert os.path.exists(os.path.join(tmp, CHECKPOINT_NAME))
 
-        # The actual point of all this: simulate a session reset by
-        # calling run() again as if from a fresh process, pointed at the
-        # same repo dir, and confirm it resumes rather than starting over.
         weights2, episodes2 = run(total_episodes=150, rng=rng)
         assert episodes2 == 150, f"expected to resume to 150, got {episodes2}"
-        print(f"\nOK: a fresh run() call against the same repo dir resumed from "
-              f"{episodes} and trained to {episodes2}, not restarted from 0 -- "
-              f"this is the actual guarantee a Kaggle session reset needs.")
-    print("OK: end-to-end wiring (train -> save -> commit) holds together "
-          "over a short smoke-test run. Push was never exercised (no real "
-          "remote here) -- that's the one step still to confirm on your end.")
+        print(f"OK: a fresh run() call against the same repo dir resumed from "
+              f"{episodes} and trained to {episodes2}, not restarted from 0.")
+    print("OK: train -> save -> commit -> resume wiring holds together. "
+          "Push was never exercised here (no real remote in a throwaway "
+          "repo) -- that only gets tested by real training, below.")
+
+
+if __name__ == "__main__":
+    import random as _random
+    import sys
+
+    if "--smoke-test" in sys.argv:
+        smoke_test()
+    else:
+        total_episodes = int(os.environ.get("TOTAL_EPISODES", "5000"))
+        print(f"Config: depth={SEARCH_DEPTH} alpha={ALPHA} "
+              f"episodes_per_batch={EPISODES_PER_BATCH} repo_dir={REPO_DIR} "
+              f"total_episodes={total_episodes}")
+        print(f"Features: {FEATURE_NAMES}\n")
+        rng = _random.Random()  # unseeded -- this is a real run, not a repeatable test
+        run(total_episodes=total_episodes, rng=rng)
+
+
+
