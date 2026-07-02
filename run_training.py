@@ -1,4 +1,4 @@
-Kaggle-ready training entry point. Pulls together checkers_engine,
+"""Kaggle-ready training entry point. Pulls together checkers_engine,
 baseline_agents, td_leaf, and td_train (all independently tested) plus
 checkpoint_manager (tested except for the real git push, see its own
 module docstring) into one script meant to be pasted into a Kaggle
